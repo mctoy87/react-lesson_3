@@ -2,7 +2,86 @@ import React from 'react';
 import style from './LifeCycle.module.css';
 
 export class LifeCycle extends React.Component {
+  /**
+   * !render
+   * constructor
+   * getDerivedStateFromProps
+   * render
+   * -
+   * !commit
+   * Обновляется DOM
+   * componentDidMount
+   * componentWillUnmount
+   */
+
+  constructor(props) {
+    super(props);
+    console.log('constructor');
+
+    this.state = {
+      field: 0,
+    };
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    console.log('getDerivedStateFromProps');
+    return state;
+  }
+
+  handler = () => {
+    this.setState(state => ({field: state.field + 1}));
+  };
+
+  componentDidMount() {
+    console.log('componentDidMount: ');
+
+    // setInterval(() => {
+    //   this.setState(state => ({
+    //     field: state.field + 1,
+    //   }));
+    // }, 3000);
+
+    // document.addEventListener('scroll', () => {
+    //   console.log('scroll');
+    // });
+
+    // eslint-disable-next-line react/prop-types
+    document.title = this.props.prop;
+  }
+
+  /**
+ *  !render
+ *  getDerivedStateFromProps
+ *  shouldComponentUpdate
+ *  render
+ *  -
+ *  !pre-commit
+ *  getSnapshotBeforeUpdate
+ *  обновляется DOM
+ *  -
+ *  !commit
+ *  componentDidUpdate
+*/
+
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    console.log('shouldComponentUpdate');
+    return this.state !== nextState || this.props !== nextProps;
+  }
+
+  getSnapshotBeforeUpdate() {
+    console.log('getSnapshotBeforeUpdate: ');
+    return null;
+  }
+  componentDidUpdate() {
+    console.log('componentDidUpdate');
+  }
+
+  componentWillUnmount() {
+
+  }
+
   render() {
+    console.log('render: ');
     return (
       <div>
         <h1 className={style.title}>Жизненный цикл</h1>
@@ -27,6 +106,10 @@ export class LifeCycle extends React.Component {
             </ul>
           </div>
         </div>
+        <button className={style.btn}
+          onClick={this.handler}>
+          Клик {this.state.field}
+        </button>
       </div>
     );
   }
