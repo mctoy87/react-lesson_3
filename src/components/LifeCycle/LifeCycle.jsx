@@ -20,6 +20,7 @@ export class LifeCycle extends React.Component {
 
     this.state = {
       field: 0,
+      hasError: false,
     };
   }
 
@@ -68,49 +69,71 @@ export class LifeCycle extends React.Component {
     return this.state !== nextState || this.props !== nextProps;
   }
 
-  getSnapshotBeforeUpdate() {
+  getSnapshotBeforeUpdate(prevProps, prevState) {
     console.log('getSnapshotBeforeUpdate: ');
-    return null;
+    return window.pageYOffset;
   }
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     console.log('componentDidUpdate');
+    window.scrollBy(0, -snapshot);
   }
 
   componentWillUnmount() {
+    // document.removeEventListeter('scroll', this.handler);
+  }
 
+  /**
+   * !error
+   * getDerivedStateFromError
+   * componentDidCatch
+   */
+
+  static getDerivedStateFromError(error) {
+    return {
+      hasError: true,
+    };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // sendLog(errorInfo.componentStack)
   }
 
   render() {
     console.log('render: ');
-    return (
-      <div>
-        <h1 className={style.title}>Жизненный цикл</h1>
 
-        <div className={style.container}>
-          <div>
-            <h2 className={style.title}>Типы</h2>
-            <ul className={style.list}>
-              <li>Монтирование</li>
-              <li>Обновление</li>
-              <li>Размонтирование</li>
-              <li>Ошибки</li>
-            </ul>
-          </div>
+    if (this.state.hasError) {
+      return <h1 className={style.title}>Ошибка</h1>;
+    } else {
+      return (
+        <div>
+          <h1 className={style.title}>Жизненный цикл</h1>
 
-          <div className='stage'>
-            <h2 className={style.title}>Этапы</h2>
-            <ul className={style.list}>
-              <li>Render</li>
-              <li>Pre-commit</li>
-              <li>Commit</li>
-            </ul>
+          <div className={style.container}>
+            <div>
+              <h2 className={style.title}>Типы</h2>
+              <ul className={style.list}>
+                <li>Монтирование</li>
+                <li>Обновление</li>
+                <li>Размонтирование</li>
+                <li>Ошибки</li>
+              </ul>
+            </div>
+
+            <div className='stage'>
+              <h2 className={style.title}>Этапы</h2>
+              <ul className={style.list}>
+                <li>Render</li>
+                <li>Pre-commit</li>
+                <li>Commit</li>
+              </ul>
+            </div>
           </div>
+          <button className={style.btn}
+            onClick={this.handler}>
+            Клик {this.state.field}
+          </button>
         </div>
-        <button className={style.btn}
-          onClick={this.handler}>
-          Клик {this.state.field}
-        </button>
-      </div>
-    );
+      );
+    }
   }
 }
