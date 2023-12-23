@@ -58,6 +58,25 @@ export class ClassComponent extends React.Component {
     });
   };
 
+  handleReloadClick = () => {
+    this.setState({
+      isHide: true,
+      randomNumber:
+        Math.floor(Math.random() * this.props.max - this.props.min) +
+        this.props.min,
+      count: 0,
+      result: 'Введите число',
+    });
+  };
+
+  showReloadButton() {
+    return (
+      <button className={style.btn} onClick={this.handleReloadClick}>
+        Начать игру заново?
+      </button>
+    );
+  }
+
   render() {
     console.log('this.state.count: ', this.state.count);
     const isHide = this.state.isHide;
@@ -65,7 +84,7 @@ export class ClassComponent extends React.Component {
 
     let button;
     if (!isHide) {
-      <button className={style.btn}></button>;
+      button = this.showReloadButton();
     }
 
     return (
